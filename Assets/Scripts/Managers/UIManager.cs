@@ -1,3 +1,4 @@
+using SFB;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -60,6 +61,8 @@ public class UIManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        //StandaloneFileBrowser.OpenFilePanel("Open File", Application.persistentDataPath, "", false);
     }
 
     // Start is called before the first frame update
