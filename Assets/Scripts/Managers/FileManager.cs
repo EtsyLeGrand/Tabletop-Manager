@@ -19,7 +19,7 @@ public class FileManager : MonoBehaviour
     private string fullSavePath;
 
     private List<ImageInfo> allImageInfos = new();
-    private List<MusicInfo> allMusicPaths = new();
+    private List<MusicInfo> allMusicInfos = new();
 
     private struct ImageInfo
     {
@@ -100,6 +100,8 @@ public class FileManager : MonoBehaviour
                     path = file,
                     fileName = Path.GetFileNameWithoutExtension(file)
                 };
+
+                allMusicInfos.Add(info);
             }
 
             // MapSettings
@@ -114,6 +116,8 @@ public class FileManager : MonoBehaviour
                 // Handle Invalid extensions
             }
         }
+
+        Debug.Log("Finished loading resources");
     }
 
     async Task<AudioClip> LoadClip(string path)
