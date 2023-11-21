@@ -21,7 +21,9 @@ public class FileManager : MonoBehaviour
     private List<ImageInfo> allImageInfos = new();
     private List<MusicInfo> allMusicInfos = new();
 
-    private struct ImageInfo
+    public Action onListAllDataComplete;
+
+    public struct ImageInfo
     {
         public Texture2D texture;
         public Vector2Int originalSize;
@@ -29,7 +31,7 @@ public class FileManager : MonoBehaviour
         public string fileName;
     }
 
-    private struct MusicInfo
+    public struct MusicInfo
     {
         public AudioClip audioClip;
         public string path;
@@ -38,6 +40,8 @@ public class FileManager : MonoBehaviour
 
     // Getters / setters
     public static FileManager Instance => instance;
+    public List<ImageInfo> AllImageInfos { get => allImageInfos; set => allImageInfos = value; }
+    public List<MusicInfo> AllMusicInfos { get => allMusicInfos; set => allMusicInfos = value; }
 
     private void Awake()
     {
@@ -118,6 +122,8 @@ public class FileManager : MonoBehaviour
         }
 
         Debug.Log("Finished loading resources");
+
+        onListAllDataComplete?.Invoke();
     }
 
     async Task<AudioClip> LoadClip(string path)

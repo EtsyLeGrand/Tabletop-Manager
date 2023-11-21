@@ -6,6 +6,9 @@ public class MainMenuMapManager : MonoBehaviour
 {
     private static MainMenuMapManager instance;
 
+    [SerializeField] private GameObject mapMenuItemPrefab;
+    [SerializeField] private Transform mapMenuItems;
+
     public static MainMenuMapManager Instance => instance;
 
     private void Awake()
@@ -18,6 +21,21 @@ public class MainMenuMapManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+        }
+    }
+
+    private void Start()
+    {
+        FileManager.Instance.onListAllDataComplete += FillMenuItems;
+        
+    }
+
+    private void FillMenuItems()
+    {
+        foreach (FileManager.ImageInfo imageInfo in FileManager.Instance.AllImageInfos)
+        {
+            GameObject item = Instantiate(mapMenuItemPrefab, mapMenuItems);
+            item.GetComponent<MapMenuItemFiller>().FillMenuItem(imageInfo.texture, imageInfo.originalSize, imageInfo.fileName);
         }
     }
 
