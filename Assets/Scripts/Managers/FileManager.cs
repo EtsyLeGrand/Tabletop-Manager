@@ -1,3 +1,4 @@
+using SFB;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -126,7 +127,14 @@ public class FileManager : MonoBehaviour
         onListAllDataComplete?.Invoke();
     }
 
-    async Task<AudioClip> LoadClip(string path)
+    private void ClearData()
+    {
+        allImageInfos.Clear();
+        allMusicInfos.Clear();
+    }
+
+    // Pour uploader l'audio
+    private async Task<AudioClip> LoadClip(string path)
     {
         AudioClip clip = null;
         using (UnityWebRequest uwr = UnityWebRequestMultimedia.GetAudioClip(path, AudioType.WAV))
@@ -151,5 +159,44 @@ public class FileManager : MonoBehaviour
         }
 
         return clip;
+    }
+
+    public void UploadNewMaps()
+    {
+        // Prepare the filter
+        string[] extensionsWithoutDot = new string[supportedImageExtensions.Length];
+
+        for (int i = 0; i < supportedImageExtensions.Length; i++)
+        {
+            // Remove the leading dot using Substring
+            extensionsWithoutDot[i] = supportedImageExtensions[i].Substring(1);
+        }
+
+        var extensions = new[] {
+                new ExtensionFilter("Image Files", extensionsWithoutDot)
+        };
+
+        string[] newItems = StandaloneFileBrowser.OpenFilePanel("Open File", Application.persistentDataPath, extensions, true);
+
+
+        foreach (string item in newItems)
+        {
+            CopyFile(item, fullSavePath);
+        }
+
+        ClearData();
+        ListAllData();
+    }
+
+    private void CopyFile(string source, string destination)
+    {
+        if (!string.IsNullOrEmpty(source) && !string.IsNullOrEmpty(destination))
+        {
+            if (File.Exists(source)) File.Copy(source, destination + "\\" + Path.GetFileName(source), true);
+        }
+        else
+        {
+            Debug.LogError("Source or destination path is empty. Specify paths in the Inspector.");
+        }
     }
 }

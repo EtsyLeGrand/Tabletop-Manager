@@ -1,3 +1,4 @@
+using SFB;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -43,5 +44,17 @@ public class MainMenuMapManager : MonoBehaviour
     {
         MainMenuUIManager.Instance.EnableCanvasGroup(MainMenuUIManager.Instance.CanvasGroup);
         MainMenuUIManager.Instance.DisableCanvasGroup(gameObject.GetComponent<CanvasGroup>());
+    }
+
+    public void OnUploadButtonPressed()
+    {
+        foreach (Transform child in mapMenuItems)
+        {
+            Destroy(child.gameObject);
+        }
+
+        mapMenuItems.DetachChildren();
+
+        FileManager.Instance.UploadNewMaps();
     }
 }
