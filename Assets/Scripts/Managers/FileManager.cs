@@ -1,10 +1,9 @@
+using Newtonsoft.Json;
 using SFB;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -30,6 +29,7 @@ public class FileManager : MonoBehaviour
         public Vector2Int originalSize;
         public string path;
         public string fileName;
+        public MapSettings mapSettings;
     }
 
     public struct MusicInfo
@@ -41,6 +41,7 @@ public class FileManager : MonoBehaviour
 
     // Getters / setters
     public static FileManager Instance => instance;
+    public string FullSavePath => fullSavePath;
     public List<ImageInfo> AllImageInfos { get => allImageInfos; set => allImageInfos = value; }
     public List<MusicInfo> AllMusicInfos { get => allMusicInfos; set => allMusicInfos = value; }
 
@@ -88,7 +89,8 @@ public class FileManager : MonoBehaviour
                     originalSize = new Vector2Int(txtr.width, txtr.height),
                     texture = txtr,
                     path = file,
-                    fileName = Path.GetFileNameWithoutExtension(file)
+                    fileName = Path.GetFileNameWithoutExtension(file),
+                    mapSettings = AssignMapSettingsToList(Path.GetFileNameWithoutExtension(file))
                 };
 
                 allImageInfos.Add(info);
@@ -125,6 +127,39 @@ public class FileManager : MonoBehaviour
         Debug.Log("Finished loading resources");
 
         onListAllDataComplete?.Invoke();
+    }
+
+    private MapSettings AssignMapSettingsToList(string fileName)
+    {
+        string mapSettingsPath = Path.Combine(Application.persistentDataPath, saveFolderPath, fileName + "_mapsettings.json");
+
+        if (File.Exists(mapSettingsPath))
+        {
+            // Json to MapSettings (MapSettings already exists)
+            string json = File.ReadAllText(mapSettingsPath);
+
+            Debug.Log("Existing " + mapSettingsPath);
+            return JsonConvert.DeserializeObject<MapSettings>(json);
+        }
+        else
+        {
+            // Create MapSettings file
+            MapSettings settings = new MapSettings
+            {
+                password = "",
+                posX = 0f,
+                posY = 0f,
+                rotZ = 0f,
+                scale = 1f
+            };
+
+            string json = JsonConvert.SerializeObject(settings, Formatting.Indented);
+            File.WriteAllText(mapSettingsPath, json);
+
+            Debug.Log("Created " + mapSettingsPath);
+
+            return settings;
+        }
     }
 
     private void ClearData()
@@ -199,4 +234,47 @@ public class FileManager : MonoBehaviour
             Debug.LogError("Source or destination path is empty. Specify paths in the Inspector.");
         }
     }
+
+    public void SaveMap(string path, string newPassword)
+    {
+        ImageInfo? imageInfoToUpdate = allImageInfos.FirstOrDefault(info => info.path == path);
+
+        // TODO - Check for duplicate passwords and fail if there is
+        if (imageInfoToUpdate != null)
+        {
+            // Update the password in the MapSettings
+            imageInfoToUpdate.Value.mapSettings.password = newPassword;
+
+            // New json object
+            string json = JsonConvert.SerializeObject(imageInfoToUpdate.Value.mapSettings, Formatting.Indented);
+
+            // New path
+            string newPath = Path.Combine(Application.persistentDataPath, saveFolderPath, imageInfoToUpdate.Value.fileName + "_mapsettings.json");
+
+            File.WriteAllText(newPath, json);
+            Debug.Log("Created " + newPath);
+        }
+        else
+        {
+            // No ImageInfo was found
+        }
+    }
+}
+
+[System.Serializable]
+public class MapSettings
+{
+    public string password;
+
+    public float posX;
+    public float posY;
+
+    public float rotZ;
+
+    public float scale;
+
+    public Vector3 GetPosition() { return new Vector3(posX, posY, 0); }
+    public Quaternion GetRotation() { return Quaternion.Euler(0, 0, rotZ); }
+    public Vector3 GetScale() { return new Vector3(scale, scale, 1); }
+
 }

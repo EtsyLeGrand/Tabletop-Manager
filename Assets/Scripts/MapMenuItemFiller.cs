@@ -12,11 +12,23 @@ public class MapMenuItemFiller : MonoBehaviour
     [SerializeField] private TMP_InputField passwordField;
     [SerializeField] private Button loadButton;
 
-    // TODO: Ajouter password et listener sur bouton load
-    public void FillMenuItem(Texture2D texture, Vector2Int size, string fileName)
+    private string imagePath;
+
+    public TMP_InputField PasswordField => passwordField;
+    public string ImagePath => imagePath;
+
+    public void SavePassword()
     {
+        string newPassword = passwordField.text;
+        FileManager.Instance.SaveMap(imagePath, newPassword);
+    }
+
+    public void FillMenuItem(string path, Texture2D texture, Vector2Int size, string fileName, string password)
+    {
+        imagePath = path;
         thumbnailImage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
         titleText.text = fileName;
         sizeText.text = size.x + "x" + size.y;
+        passwordField.text = password;
     }
 }

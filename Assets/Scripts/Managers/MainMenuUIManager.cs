@@ -39,8 +39,7 @@ public class MainMenuUIManager : MonoBehaviour
 
     public void OnOpenMusicMenu()
     {
-        DisableCanvasGroup(canvasGroup);
-
+        //DisableCanvasGroup(canvasGroup);
     }
 
     public void OnExitApp()

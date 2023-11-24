@@ -36,7 +36,8 @@ public class MainMenuMapManager : MonoBehaviour
         foreach (FileManager.ImageInfo imageInfo in FileManager.Instance.AllImageInfos)
         {
             GameObject item = Instantiate(mapMenuItemPrefab, mapMenuItems);
-            item.GetComponent<MapMenuItemFiller>().FillMenuItem(imageInfo.texture, imageInfo.originalSize, imageInfo.fileName);
+            item.GetComponent<MapMenuItemFiller>().FillMenuItem(
+                imageInfo.path, imageInfo.texture, imageInfo.originalSize, imageInfo.fileName, imageInfo.mapSettings.password);
         }
     }
 
@@ -56,5 +57,13 @@ public class MainMenuMapManager : MonoBehaviour
         mapMenuItems.DetachChildren();
 
         FileManager.Instance.UploadNewMaps();
+    }
+
+    public void OnSaveAllButtonPressed()
+    {
+        foreach(MapMenuItemFiller menuItem in mapMenuItems.GetComponentsInChildren<MapMenuItemFiller>())
+        {
+            FileManager.Instance.SaveMap(menuItem.ImagePath, menuItem.PasswordField.text);
+        }
     }
 }
