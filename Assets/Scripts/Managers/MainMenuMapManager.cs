@@ -28,7 +28,12 @@ public class MainMenuMapManager : MonoBehaviour
     private void Start()
     {
         FileManager.Instance.onListAllDataComplete += FillMenuItems;
-        
+    }
+
+    // Fill Menu Items on load
+    private void OnEnable()
+    {
+        FillMenuItems();
     }
 
     private void FillMenuItems()

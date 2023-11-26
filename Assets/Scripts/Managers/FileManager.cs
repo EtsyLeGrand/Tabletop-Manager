@@ -60,16 +60,16 @@ public class FileManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    private void Start()
+    private async void Start()
     {
         fullSavePath = Path.Combine(Application.persistentDataPath, saveFolderPath);
 
         if (!Directory.Exists(fullSavePath)) Directory.CreateDirectory(fullSavePath);
 
-        ListAllData();
+        await ListAllData();
     }
 
-    private async void ListAllData()
+    private async Task ListAllData()
     {
         string[] allFilesInFolder = Directory.GetFiles(fullSavePath);
 
@@ -144,7 +144,7 @@ public class FileManager : MonoBehaviour
         else
         {
             // Create MapSettings file
-            MapSettings settings = new MapSettings
+            MapSettings settings = new()
             {
                 password = "",
                 posX = 0f,
@@ -196,7 +196,7 @@ public class FileManager : MonoBehaviour
         return clip;
     }
 
-    public void UploadNewMaps()
+    public async void UploadNewMaps()
     {
         // Prepare the filter
         string[] extensionsWithoutDot = new string[supportedImageExtensions.Length];
@@ -204,7 +204,7 @@ public class FileManager : MonoBehaviour
         for (int i = 0; i < supportedImageExtensions.Length; i++)
         {
             // Remove the leading dot using Substring
-            extensionsWithoutDot[i] = supportedImageExtensions[i].Substring(1);
+            extensionsWithoutDot[i] = supportedImageExtensions[i][1..];
         }
 
         var extensions = new[] {
@@ -220,7 +220,7 @@ public class FileManager : MonoBehaviour
         }
 
         ClearData();
-        ListAllData();
+        await ListAllData();
     }
 
     private void CopyFile(string source, string destination)

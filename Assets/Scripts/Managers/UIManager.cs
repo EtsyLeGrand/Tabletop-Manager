@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
@@ -173,5 +174,10 @@ public class UIManager : MonoBehaviour
     public void OnCenterImageButtonClicked()
     {
         mapObject.transform.position = Vector3.zero;
+    }
+
+    public void OnReturnToMainMenuButtonClicked()
+    {
+        SceneManager.LoadScene("MainMenuScene");
     }
 }
