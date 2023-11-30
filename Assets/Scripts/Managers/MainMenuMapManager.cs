@@ -28,6 +28,13 @@ public class MainMenuMapManager : MonoBehaviour
     private void Start()
     {
         FileManager.Instance.onListAllDataComplete += FillMenuItems;
+        FileManager.Instance.onClearAllDataComplete += ClearMenuItems;
+    }
+
+    private void OnDestroy()
+    {
+        FileManager.Instance.onListAllDataComplete -= FillMenuItems;
+        FileManager.Instance.onClearAllDataComplete -= ClearMenuItems;
     }
 
     // Fill Menu Items on load
@@ -43,6 +50,14 @@ public class MainMenuMapManager : MonoBehaviour
             GameObject item = Instantiate(mapMenuItemPrefab, mapMenuItems);
             item.GetComponent<MapMenuItemFiller>().FillMenuItem(
                 imageInfo.path, imageInfo.texture, imageInfo.originalSize, imageInfo.fileName, imageInfo.mapSettings.password);
+        }
+    }
+
+    private void ClearMenuItems()
+    {
+        foreach (Transform item in mapMenuItems)
+        {
+            Destroy(item.gameObject);
         }
     }
 

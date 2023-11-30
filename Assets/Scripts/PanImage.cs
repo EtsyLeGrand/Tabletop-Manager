@@ -8,6 +8,7 @@ public class PanImage : MonoBehaviour
 {
     [SerializeField] private UIManager uiManager; // Pour l'action Lock
     [SerializeField] private float panSpeed = 0.005f;
+
     private bool isPanning = false;
     private bool isLocked = false;
     private bool isModeAppropriate = false;
@@ -21,10 +22,12 @@ public class PanImage : MonoBehaviour
     private void Start()
     {
         uiManager.OnLockButtonClicked += () => { isLocked = !isLocked; };
+
         uiManager.OnMouseModeChanged += (UIManager.MouseMode newMode) => {
             if (newMode == UIManager.MouseMode.Pan) isModeAppropriate = true;
             else isModeAppropriate = false;
         };
+
         uiManager.OnRotationChanged += (int newRotation) =>
         {
             xRotationModifier = (newRotation == 0 || newRotation == 270) ? 1 : -1;
@@ -33,7 +36,7 @@ public class PanImage : MonoBehaviour
         };
     }
 
-    void OnMouseDown()
+    private void OnMouseDown()
     {
         if (!EventSystem.current.IsPointerOverGameObject() && !isLocked && isModeAppropriate)
         {
@@ -42,12 +45,12 @@ public class PanImage : MonoBehaviour
         }
     }
 
-    void OnMouseUp()
+    private void OnMouseUp()
     {
         isPanning = false;
     }
 
-    void OnMouseDrag()
+    private void OnMouseDrag()
     {
         if (isPanning)
         {

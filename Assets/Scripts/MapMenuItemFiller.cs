@@ -17,10 +17,15 @@ public class MapMenuItemFiller : MonoBehaviour
     public TMP_InputField PasswordField => passwordField;
     public string ImagePath => imagePath;
 
-    public void SavePassword()
+    public void SavePasswordButton()
     {
         string newPassword = passwordField.text;
         FileManager.Instance.SaveMap(imagePath, newPassword);
+    }
+
+    public void DeleteItemButton()
+    {
+        FileManager.Instance.DeleteMap(imagePath);
     }
 
     public void FillMenuItem(string path, Texture2D texture, Vector2Int size, string fileName, string password)

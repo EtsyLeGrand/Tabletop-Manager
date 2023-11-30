@@ -22,6 +22,7 @@ public class FileManager : MonoBehaviour
     private List<MusicInfo> allMusicInfos = new();
 
     public Action onListAllDataComplete;
+    public Action onClearAllDataComplete;
 
     public struct ImageInfo
     {
@@ -71,6 +72,7 @@ public class FileManager : MonoBehaviour
 
     private async Task ListAllData()
     {
+        ClearData();
         string[] allFilesInFolder = Directory.GetFiles(fullSavePath);
 
         foreach (string file in allFilesInFolder)
@@ -258,6 +260,17 @@ public class FileManager : MonoBehaviour
         {
             // No ImageInfo was found
         }
+    }
+
+    public async void DeleteMap(string path)
+    {
+        string fileName = Path.GetFileNameWithoutExtension(path);
+
+        File.Delete(path);
+        File.Delete(Path.Combine(fullSavePath, fileName + "_mapsettings.json"));
+
+        onClearAllDataComplete?.Invoke();
+        await ListAllData();
     }
 }
 

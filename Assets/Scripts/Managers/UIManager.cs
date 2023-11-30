@@ -2,6 +2,7 @@ using SFB;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -18,6 +19,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Slider sizeSlider;
     [SerializeField] private Image lockButtonImage;
     [SerializeField] private TMP_InputField sizeInputField;
+    [SerializeField] private MapPasswordInputField passwordInputField;
     [SerializeField] private Button[] buttonArray; // Tous les boutons sauf lock
 
     [SerializeField] private Button cursorMouseModeButton;
@@ -29,6 +31,7 @@ public class UIManager : MonoBehaviour
     private MouseMode mouseMode = MouseMode.Cursor;
 
     private bool isLocked = false;
+    private bool areKeyShortcutsEnabled = true;
     private int currentRotation = 0;
     private float scrollSpeed = 0.0025f;
     private Vector3 originalScale = Vector3.one;
@@ -62,29 +65,33 @@ public class UIManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
-        //StandaloneFileBrowser.OpenFilePanel("Open File", Application.persistentDataPath, "", false);
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         originalScale = transform.localScale; // À changer quand on pourra loader des maps
         cursorMouseModeButton.interactable = false; // Mouse mode cursor
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.H))
+        // Hide UI
+        if (Input.GetKeyDown(KeyCode.H) && areKeyShortcutsEnabled)
         {
             canvasObject.SetActive(!canvasObject.activeSelf);
-        } // Hide UI
+        }
 
-        if (Input.GetKeyDown(KeyCode.L))
+        // Lock Map
+        if (Input.GetKeyDown(KeyCode.L) && areKeyShortcutsEnabled)
         {
             OnMapLockButtonClicked();
-        } // Lock Map
+        }
+
+        // Open Password Field
+        if ((Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) && Input.GetKeyDown(KeyCode.M))
+        {
+            OnMapPasswordButtonClicked();
+        }
 
         if (!isLocked)
         {
@@ -94,7 +101,13 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    private void ToggleKeyShortcuts(bool toggle)
+    {
+        areKeyShortcutsEnabled = toggle;
+    }
+
     // Public functions
+    // Buttons
     public void RotateObject(int angle)
     {
         if (!isLocked) 
@@ -179,5 +192,18 @@ public class UIManager : MonoBehaviour
     public void OnReturnToMainMenuButtonClicked()
     {
         SceneManager.LoadScene("MainMenuScene");
+    }
+
+    public void OnMapPasswordButtonClicked()
+    {
+        OnMapLockButtonClicked();
+        passwordInputField.gameObject.SetActive(!passwordInputField.gameObject.activeInHierarchy);
+        ToggleKeyShortcuts(!areKeyShortcutsEnabled);
+        passwordInputField.InitField();
+    }
+
+    public void OnMusicPasswordButtonClicked()
+    {
+
     }
 }

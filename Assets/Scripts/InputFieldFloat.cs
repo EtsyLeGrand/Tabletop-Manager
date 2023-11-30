@@ -27,12 +27,12 @@ public class InputFieldFloat : MonoBehaviour
             {
                 linkedSlider.value = result / 100;
                 previousInputFieldValue = inputField.text;
-                Debug.Log("Valeur modifiée");
+                Debug.Log("Size percentage changed");
             }
             else
             {
                 inputField.text = previousInputFieldValue;
-                Debug.LogWarning("L'entrée du inputField n'était pas un float.");
+                Debug.LogWarning("Size error");
             }
         });
 
