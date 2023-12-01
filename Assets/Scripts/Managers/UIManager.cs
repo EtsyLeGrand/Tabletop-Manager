@@ -19,7 +19,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Slider sizeSlider;
     [SerializeField] private Image lockButtonImage;
     [SerializeField] private TMP_InputField sizeInputField;
-    [SerializeField] private MapPasswordInputField passwordInputField;
+    [SerializeField] private MapPasswordInputField mapPasswordInputField;
     [SerializeField] private Button[] buttonArray; // Tous les boutons sauf lock
 
     [SerializeField] private Button cursorMouseModeButton;
@@ -49,6 +49,7 @@ public class UIManager : MonoBehaviour
 
     // Getters / setters
     public static UIManager Instance => instance;
+    public MapPasswordInputField MapPasswordInputField => mapPasswordInputField;
 
     public Action OnLockButtonClicked { get => onLockButtonClicked; set => onLockButtonClicked = value; }
     public Action<MouseMode> OnMouseModeChanged { get => onMouseModeChanged; set => onMouseModeChanged = value; }
@@ -197,9 +198,9 @@ public class UIManager : MonoBehaviour
     public void OnMapPasswordButtonClicked()
     {
         OnMapLockButtonClicked();
-        passwordInputField.gameObject.SetActive(!passwordInputField.gameObject.activeInHierarchy);
+        mapPasswordInputField.gameObject.SetActive(!mapPasswordInputField.gameObject.activeInHierarchy);
         ToggleKeyShortcuts(!areKeyShortcutsEnabled);
-        passwordInputField.InitField();
+        mapPasswordInputField.InitField();
     }
 
     public void OnMusicPasswordButtonClicked()

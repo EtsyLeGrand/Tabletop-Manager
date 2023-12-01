@@ -1,10 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using System.Linq;
 using UnityEngine;
 
 public class MapPasswordInputField : PasswordInputField
 {
+    private Action<FileManager.ImageInfo> onSendNewMapData;
+
+    public Action<FileManager.ImageInfo> OnSendNewMapData { get => onSendNewMapData; set => onSendNewMapData = value; }
+
     private new void Awake()
     {
         base.Awake();
@@ -18,16 +21,17 @@ public class MapPasswordInputField : PasswordInputField
         {
             FileManager.ImageInfo imageInfo = FileManager.Instance.AllImageInfos.FirstOrDefault(info => info.mapSettings.password == passwordValue);
             
-            if (!imageInfo.Equals(default(FileManager.ImageInfo)))
+            if (!string.IsNullOrEmpty(passwordValue) && !imageInfo.Equals(default(FileManager.ImageInfo)))
             {
                 // Mot de passe trouvé
+                onSendNewMapData?.Invoke(imageInfo);
             }
             else
             {
-                Debug.Log("Non existant");
+                Debug.Log("Non existant ou vide");
             }
 
-            UIManager.Instance.OnMapPasswordButtonClicked(); // Re-désactiver
+            UIManager.Instance.OnMapPasswordButtonClicked(); // Cacher / Désactiver le field
         });
     }
 

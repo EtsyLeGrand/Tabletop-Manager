@@ -9,6 +9,8 @@ public class PanImage : MonoBehaviour
     [SerializeField] private UIManager uiManager; // Pour l'action Lock
     [SerializeField] private float panSpeed = 0.005f;
 
+    private SpriteRenderer spriteRenderer;
+
     private bool isPanning = false;
     private bool isLocked = false;
     private bool isModeAppropriate = false;
@@ -18,6 +20,11 @@ public class PanImage : MonoBehaviour
     private bool isImageOnTheSide = false;
 
     private Vector3 lastPanPosition;
+
+    private void Awake()
+    {
+        if (!TryGetComponent(out spriteRenderer)) Debug.LogError("No sprite renderer was found!");
+    }
 
     private void Start()
     {
@@ -34,8 +41,14 @@ public class PanImage : MonoBehaviour
             yRotationModifier = (newRotation == 0 || newRotation == 90) ? 1 : -1;
             isImageOnTheSide = (newRotation == 90 || newRotation == 270);
         };
+
+        uiManager.MapPasswordInputField.OnSendNewMapData += (FileManager.ImageInfo newImageInfo) =>
+        {
+            spriteRenderer.sprite = Sprite.Create(newImageInfo.texture, new Rect(0, 0, newImageInfo.texture.width, newImageInfo.texture.height), new Vector2(0.5f, 0.5f));
+        };
     }
 
+    // Panning
     private void OnMouseDown()
     {
         if (!EventSystem.current.IsPointerOverGameObject() && !isLocked && isModeAppropriate)
@@ -70,5 +83,10 @@ public class PanImage : MonoBehaviour
             transform.Translate(adjustedPanDelta * panSpeed);
             lastPanPosition = Input.mousePosition;
         }
+    }
+
+    public void SetNewImage(FileManager.ImageInfo newImageInfo)
+    {
+
     }
 }

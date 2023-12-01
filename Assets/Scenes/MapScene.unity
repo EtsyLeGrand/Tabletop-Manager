@@ -2687,7 +2687,7 @@ MonoBehaviour:
   sizeSlider: {fileID: 482668809}
   lockButtonImage: {fileID: 1230899866}
   sizeInputField: {fileID: 1772015019}
-  passwordInputField: {fileID: 1159391007}
+  mapPasswordInputField: {fileID: 1159391007}
   buttonArray:
   - {fileID: 198519601}
   - {fileID: 1025691859}
